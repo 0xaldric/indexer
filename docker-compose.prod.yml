@@ -39,6 +39,8 @@ services:
       - ./zk-txn-logs:/var/lib/zookeeper/log
     ports:
       - 22181:2181
+    networks:
+      - indexer_network
   kafka:
     image: confluentinc/cp-kafka:latest
     restart: always
@@ -49,12 +51,14 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://10.128.0.5:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://${EXTERNAL_IP}:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
       - ./kafka-data:/var/lib/kafka/data
+    networks:
+      - indexer_network
   kafka-ui:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
@@ -64,3 +68,5 @@ services:
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+    networks:
+      - indexer_network

@@ -30,6 +30,8 @@ services:
       WORKERS: ${WORKERS}
       LITESERVERS: ${LITESERVERS}
       DEBUG_LOGS: ${DEBUG_LOGS}
+    networks:
+      - indexer_network
   rescan:
     <<: *anton-service
     depends_on:

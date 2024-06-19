@@ -3,10 +3,12 @@ package parser
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/tonindexer/anton/abi/known"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
@@ -19,6 +21,24 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	} else {
 		msg.DstContract = op.ContractName
 	}
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"});
+	if err != nil {
+		panic(err)
+	}
+	defer p.Close()
+	// Delivery report handler for produced messages
+	go func() {
+		for e := range p.Events() {
+			switch ev := e.(type) {
+			case *kafka.Message:
+				if ev.TopicPartition.Error != nil {
+					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
+				} else {
+					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
+				}
+			}
+		}
+	}()	
 
 	payloadCell, err := cell.FromBOC(msg.Body)
 	if err != nil {
