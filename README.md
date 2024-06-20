@@ -89,7 +89,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d postgres cl
 go test -p 1 $(go list ./... | grep /internal/core) -covermode=count
 ```
 
-### Running linter
+### Running linter after commiting
 
 Firstly, install [`golangci-lint`](https://golangci-lint.run/usage/install/).
 
@@ -120,42 +120,11 @@ nano .env
 | `LITESERVERS`         | Lite servers to connect to         |         | 135.181.177.59:53312 aF91CuUHuuOv9rm2W5+O/4h38M3sRm40DtSdRxQhmtQ=  |
 | `DEBUG_LOGS`          | Debug logs enabled                 | false   | true                                                               |
 
-### Building
-
-```shell
-# building it locally
-go build -o anton .
-
-# build local docker container via docker cli
-docker build -t anton:latest .
-# or via compose
-docker compose -f docker-compose.yml -f docker-compose.dev.yml build
-
-# pull public images
-docker compose pull
-```
-
 ### Running
 
-We have several options for compose run via [override files](https://docs.docker.com/compose/extends/#multiple-compose-files):
-* base (docker-compose.yml) - allows to run services with near default configuration;
-* dev (docker-compose.dev.yml) - allows to rebuild Anton image locally and exposes databases ports;
-* prod (docker-compose.prod.yml) - allows to configure and backup databases, requires at least 128GB RAM.
-
-You can combine it by your own. Also, there are optional [profiles](https://docs.docker.com/compose/profiles/):
-* migrate - runs optional migrations service.
-
-Take a look at the following run examples:
 ```shell
-# run base compose
-docker compose up -d
-
-# run dev compose (build docker image locally)
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
-
-# run prod compose
-# WARNING: requires at least 128GB RAM
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# via compose
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 ```
 
 To run Anton, you need at least one defined contract interface.

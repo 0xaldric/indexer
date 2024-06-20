@@ -14,6 +14,20 @@ import (
 	"github.com/tonindexer/anton/internal/core"
 )
 
+type KafkaMessageSchema struct {
+	OpName string `json:"op_name"`
+	OpCode uint32 `json:"op_code"`
+	Body  string `json:"body"`
+}
+
+func mapToString(m map[string]string) string {
+	var str string
+	for key, value := range m {
+			str += fmt.Sprintf("%s: %s, ", key, value)
+	}
+	return str
+}
+
 func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error {
 	msg.OperationName = op.OperationName
 	if op.Outgoing {
@@ -21,12 +35,12 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	} else {
 		msg.DstContract = op.ContractName
 	}
+
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"});
 	if err != nil {
 		panic(err)
 	}
 	defer p.Close()
-	// Delivery report handler for produced messages
 	go func() {
 		for e := range p.Events() {
 			switch ev := e.(type) {
@@ -39,6 +53,7 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 			}
 		}
 	}()	
+	topic := msg.OperationName
 
 	payloadCell, err := cell.FromBOC(msg.Body)
 	if err != nil {
@@ -54,6 +69,48 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	if err != nil {
 		return errors.Wrap(err, "json marshal parsed payload")
 	}
+	
+	var data map[string]interface{}
+	if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
+		return errors.Wrap(err, "json unmarshal parsed payload")
+	}
+
+	formattedData := make(map[string]string)
+	for _, body := range op.Schema.Body {
+		if value, ok := data[body.Name]; ok {
+			// Marshal the struct directly
+			jsonData, err := json.Marshal(map[string]interface{}{
+				"name":  body.Name,
+				"type":  body.Type,
+				"value": value,
+			})
+			if err != nil {
+				fmt.Println("Error marshalling JSON:", err)
+				continue
+			}
+			// Store the JSON string in formattedData map
+			formattedData[body.Name] = string(jsonData)
+		}
+	}
+	formmatedDataJSON, err := json.Marshal(formattedData)
+	if err != nil {
+		return errors.Wrap(err, "json marshal formatted data")
+	}
+	messageKafka := KafkaMessageSchema{
+		OpName: op.OperationName,
+		OpCode: op.OperationID,
+		Body:   string(formmatedDataJSON),
+	}
+	messageKafkaJSON, err := json.Marshal(messageKafka)
+	if err != nil {
+		return errors.Wrap(err, "json marshal kafka message")
+	}
+	p.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          messageKafkaJSON,
+	}, nil)
+
+	p.Flush(1000 * 1000)
 
 	return nil
 }

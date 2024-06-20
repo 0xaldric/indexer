@@ -22,3 +22,5 @@
 kafka-data
 zk-data
 zk-txn-logs
+
+node_modules/
