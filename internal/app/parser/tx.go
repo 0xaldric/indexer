@@ -26,7 +26,9 @@ func mapJSONToString(m map[string]string) string {
 		str += value + ","
 	}
 	// Remove the last comma
-	str = str[:len(str)-1]
+	if len(str) > 0 {
+		str = str[:len(str)-1]
+	}
 	return str
 }
 
