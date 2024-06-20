@@ -17,14 +17,16 @@ import (
 type KafkaMessageSchema struct {
 	OpName string `json:"op_name"`
 	OpCode uint32 `json:"op_code"`
-	Body  string `json:"body"`
+	Body  json.RawMessage `json:"body"`
 }
 
-func mapToString(m map[string]string) string {
+func mapJSONToString(m map[string]string) string {
 	var str string
-	for key, value := range m {
-			str += fmt.Sprintf("%s: %s, ", key, value)
+	for _, value := range m {
+		str += value + ","
 	}
+	// Remove the last comma
+	str = str[:len(str)-1]
 	return str
 }
 
@@ -74,7 +76,6 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
 		return errors.Wrap(err, "json unmarshal parsed payload")
 	}
-
 	formattedData := make(map[string]string)
 	for _, body := range op.Schema.Body {
 		if value, ok := data[body.Name]; ok {
@@ -92,19 +93,25 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 			formattedData[body.Name] = string(jsonData)
 		}
 	}
-	formmatedDataJSON, err := json.Marshal(formattedData)
-	if err != nil {
-		return errors.Wrap(err, "json marshal formatted data")
-	}
 	messageKafka := KafkaMessageSchema{
 		OpName: op.OperationName,
 		OpCode: op.OperationID,
-		Body:   string(formmatedDataJSON),
+		Body:   json.RawMessage("[" + mapJSONToString(formattedData) + "]"),
 	}
 	messageKafkaJSON, err := json.Marshal(messageKafka)
 	if err != nil {
 		return errors.Wrap(err, "json marshal kafka message")
 	}
+
+	if (topic == "stonfi_pool_swap") {
+		fmt.Println("Message to Kafka:", string(messageKafkaJSON))
+		fmt.Println("Topic:", topic)
+		fmt.Println("Data:", mapJSONToString(formattedData))
+		for key, value := range data {
+			fmt.Printf("stonfi data swap %s: %s\n", key, value)
+		}
+	}
+
 	p.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          messageKafkaJSON,

@@ -14,12 +14,25 @@ const run = async () => {
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       // convert message.value into JSON
+      json = JSON.parse(message.value.toString())
+      try {
+        // check if body is already an object
+        if (typeof json.body === 'object') {
+          body = json.body;
+        } else {
+          body = JSON.parse(json.body)
+        }
+        console.log(body)
+      } catch(e) {
+        console.log(e)
+      }
+      console.log(json)
       console.log({
         partition,
         offset: message.offset,
         value: message.value.toString(),
       })
-    },
+    }
   })
 }
 
