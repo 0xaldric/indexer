@@ -46,7 +46,6 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 	}()	
 	for s.running() {
 		msg := <-msgChannel
-		fmt.Println(len(msgChannel))
 		var data map[string]interface{}
 		if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
