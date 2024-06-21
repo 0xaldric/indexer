@@ -12,24 +12,6 @@ import (
 	"github.com/tonindexer/anton/internal/core"
 )
 
-type KafkaMessageSchema struct {
-	OpName string `json:"op_name"`
-	OpCode uint32 `json:"op_code"`
-	Body  json.RawMessage `json:"body"`
-}
-
-func mapJSONToString(m map[string]string) string {
-	var str string
-	for _, value := range m {
-		str += value + ","
-	}
-	// Remove the last comma
-	if len(str) > 0 {
-		str = str[:len(str)-1]
-	}
-	return str
-}
-
 func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error {
 	msg.OperationName = op.OperationName
 	if op.Outgoing {
