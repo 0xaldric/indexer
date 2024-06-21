@@ -3,12 +3,10 @@ package parser
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/xssnick/tonutils-go/tvm/cell"
 
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/tonindexer/anton/abi/known"
 	"github.com/tonindexer/anton/internal/app"
 	"github.com/tonindexer/anton/internal/core"
@@ -39,26 +37,6 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	} else {
 		msg.DstContract = op.ContractName
 	}
-
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"});
-	if err != nil {
-		panic(err)
-	}
-	defer p.Close()
-	go func() {
-		for e := range p.Events() {
-			switch ev := e.(type) {
-			case *kafka.Message:
-				if ev.TopicPartition.Error != nil {
-					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
-				} else {
-					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
-				}
-			}
-		}
-	}()	
-	topic := msg.OperationName
-
 	payloadCell, err := cell.FromBOC(msg.Body)
 	if err != nil {
 		return errors.Wrap(err, "msg body from boc")
@@ -73,53 +51,6 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	if err != nil {
 		return errors.Wrap(err, "json marshal parsed payload")
 	}
-	
-	var data map[string]interface{}
-	if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
-		return errors.Wrap(err, "json unmarshal parsed payload")
-	}
-	formattedData := make(map[string]string)
-	for _, body := range op.Schema.Body {
-		if value, ok := data[body.Name]; ok {
-			// Marshal the struct directly
-			jsonData, err := json.Marshal(map[string]interface{}{
-				"name":  body.Name,
-				"type":  body.Type,
-				"value": value,
-			})
-			if err != nil {
-				fmt.Println("Error marshalling JSON:", err)
-				continue
-			}
-			// Store the JSON string in formattedData map
-			formattedData[body.Name] = string(jsonData)
-		}
-	}
-	messageKafka := KafkaMessageSchema{
-		OpName: op.OperationName,
-		OpCode: op.OperationID,
-		Body:   json.RawMessage("[" + mapJSONToString(formattedData) + "]"),
-	}
-	messageKafkaJSON, err := json.Marshal(messageKafka)
-	if err != nil {
-		return errors.Wrap(err, "json marshal kafka message")
-	}
-
-	if (topic == "stonfi_pool_swap") {
-		fmt.Println("Message to Kafka:", string(messageKafkaJSON))
-		fmt.Println("Topic:", topic)
-		fmt.Println("Data:", mapJSONToString(formattedData))
-		for key, value := range data {
-			fmt.Printf("stonfi data swap %s: %s\n", key, value)
-		}
-	}
-
-	p.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Value:          messageKafkaJSON,
-	}, nil)
-
-	p.Flush(1000 * 1000)
 
 	return nil
 }
