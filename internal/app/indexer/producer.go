@@ -52,20 +52,19 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		}
 		formmatedData := make(map[string]string)
 		for i, body := range data {
-			jsonData, err := json.Marshal(map[string]interface{}{
-				"name":  i,
-				"value": body,
-			})
-			if err != nil {
-				log.Error().Msg(fmt.Sprintf("json marshal parsed payload: %v\n", err))
-				continue
+			switch body := body.(type) {
+			case string:
+				formmatedData[i] = body
 			}
-			formmatedData[i] = string(jsonData)
+		}
+		jsonData, err := json.Marshal(formmatedData)
+		if err != nil {
+			log.Error().Msg(fmt.Sprintf("json marshal formmated data: %v\n", err))
 		}
 		messageKafka := KafkaMessageSchema{
 			OpName: msg.OperationName,
 			OpCode: msg.OperationID,
-			Body:   json.RawMessage("[" + mapJSONToString(formmatedData) + "]"),
+			Body:   json.RawMessage(jsonData),
 		}
 		messageKafkaJSON, err := json.Marshal(messageKafka)
 	
