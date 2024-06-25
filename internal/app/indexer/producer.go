@@ -16,18 +16,6 @@ type KafkaMessageSchema struct {
 	Body  json.RawMessage `json:"body"`
 }
 
-func mapJSONToString(m map[string]string) string {
-	var str string
-	for _, value := range m {
-		str += value + ","
-	}
-	// Remove the last comma
-	if len(str) > 0 {
-		str = str[:len(str)-1]
-	}
-	return str
-}
-
 func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"});
 	if err != nil {
@@ -67,10 +55,12 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			Body:   json.RawMessage(jsonData),
 		}
 		messageKafkaJSON, err := json.Marshal(messageKafka)
-	
-		topic := msg.OperationName
+		if err != nil {
+			log.Error().Msg(fmt.Sprintf("json marshal kafka message: %v\n", err))
+		}
+		topicName := msg.OperationName
 		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			TopicPartition: kafka.TopicPartition{Topic: &topicName, Partition: kafka.PartitionAny},
 			Value:          messageKafkaJSON,
 		}, nil)
 		
