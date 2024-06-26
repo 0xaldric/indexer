@@ -38,12 +38,13 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
 		}
-		formmatedData := make(map[string]string)
+		formmatedData := make(map[string]json.RawMessage)
 		for i, body := range data {
-			switch body := body.(type) {
-			case string:
-				formmatedData[i] = body
+			jsonBody, err := json.Marshal(body)
+			if err != nil {
+				log.Error().Msg(fmt.Sprintf("json marshal body: %v\n", err))
 			}
+			formmatedData[i] = json.RawMessage(jsonBody)
 		}
 		jsonData, err := json.Marshal(formmatedData)
 		if err != nil {
@@ -61,7 +62,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		topicName := msg.OperationName
 		p.Produce(&kafka.Message{
 			TopicPartition: kafka.TopicPartition{Topic: &topicName, Partition: kafka.PartitionAny},
-			Value:          messageKafkaJSON,
+			Value:          json.RawMessage(messageKafkaJSON),
 		}, nil)
 		
 		if err != nil {
