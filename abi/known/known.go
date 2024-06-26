@@ -15,6 +15,8 @@ var (
 	DedustV2Factory abi.ContractName = "dedust_v2_factory"
 	StonFiPool      abi.ContractName = "stonfi_pool"
 	StonFiRouter    abi.ContractName = "stonfi_router"
+	TonfunFactory  abi.ContractName = "tonfun_factory"
+	Tonfun 			 abi.ContractName = "tonfun"
 )
 
 var (
