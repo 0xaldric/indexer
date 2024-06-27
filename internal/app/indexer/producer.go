@@ -39,6 +39,9 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
 		}
 		formmatedData := make(map[string]json.RawMessage)
+		data["srcAddress"] = msg.SrcAddress.MustToTonutils().String()
+		data["dstAddress"] = msg.DstAddress.MustToTonutils().String()
+		data["timestamp"] = msg.CreatedAt.Unix()
 		for i, body := range data {
 			jsonBody, err := json.Marshal(body)
 			if err != nil {
@@ -47,6 +50,8 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			formmatedData[i] = json.RawMessage(jsonBody)
 		}
 		jsonData, err := json.Marshal(formmatedData)
+		fmt.Println(formmatedData)
+		fmt.Println(jsonData)
 		if err != nil {
 			log.Error().Msg(fmt.Sprintf("json marshal formmated data: %v\n", err))
 		}
