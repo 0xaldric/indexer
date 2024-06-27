@@ -1,9 +1,7 @@
 [
   {
     "interface_name": "dedust_v2_factory",
-    "addresses": [
-      "EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67"
-    ],
+    "addresses": ["EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67"],
     "definitions": {
       "pool_params": [
         {
@@ -830,6 +828,49 @@
   },
   {
     "interface_name": "dedust_v2_vault",
+    "in_messages": [
+      {
+        "op_name": "dedust_v2_swap",
+        "op_code": "0xea06185d",
+        "body": [
+          {
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "amount",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "pool_addr",
+            "tlb_type": "addr",
+            "format": "addr"
+          },
+          {
+            "name": "unknown",
+            "tlb_type": "## 1",
+            "format": "bool"
+          },
+          {
+            "name": "min_amount",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "swap_step",
+            "tlb_type": "maybe ^",
+            "format": "cell"
+          },
+          {
+            "name": "swap_params",
+            "tlb_type": "either . ^",
+            "format": "cell"
+          }
+        ]
+      }
+    ],
     "get_methods": [
       {
         "name": "get_version",
