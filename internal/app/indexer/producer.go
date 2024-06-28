@@ -13,6 +13,11 @@ import (
 type KafkaMessageSchema struct {
 	OpName string `json:"op_name"`
 	OpCode uint32 `json:"op_code"`
+	Value uint64 `json:"value"`
+	CreatedAt int64 `json:"created_at"`
+	CreatedLT uint64 `json:"created_lt"`
+	SrcAddress string `json:"src_address"`
+	DstAddress string `json:"dst_address"`
 	Body  json.RawMessage `json:"body"`
 }
 
@@ -39,9 +44,6 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
 		}
 		formmatedData := make(map[string]json.RawMessage)
-		data["srcAddress"] = msg.SrcAddress.MustToTonutils().String()
-		data["dstAddress"] = msg.DstAddress.MustToTonutils().String()
-		data["timestamp"] = msg.CreatedAt.Unix()
 		for i, body := range data {
 			jsonBody, err := json.Marshal(body)
 			if err != nil {
@@ -50,14 +52,17 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			formmatedData[i] = json.RawMessage(jsonBody)
 		}
 		jsonData, err := json.Marshal(formmatedData)
-		fmt.Println(formmatedData)
-		fmt.Println(jsonData)
 		if err != nil {
 			log.Error().Msg(fmt.Sprintf("json marshal formmated data: %v\n", err))
 		}
 		messageKafka := KafkaMessageSchema{
 			OpName: msg.OperationName,
 			OpCode: msg.OperationID,
+			Value: msg.Amount.ToUInt64(),
+			CreatedAt: msg.CreatedAt.Unix(),
+			CreatedLT: msg.CreatedLT,
+			SrcAddress: msg.SrcAddress.MustToTonutils().String(),
+			DstAddress: msg.DstAddress.MustToTonutils().String(),
 			Body:   json.RawMessage(jsonData),
 		}
 		messageKafkaJSON, err := json.Marshal(messageKafka)
