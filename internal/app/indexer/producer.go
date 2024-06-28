@@ -1,9 +1,11 @@
 package indexer
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
+	"github.com/allisson/go-env"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/rs/zerolog/log"
 
@@ -18,10 +20,39 @@ type KafkaMessageSchema struct {
 	CreatedLT uint64 `json:"created_lt"`
 	SrcAddress string `json:"src_address"`
 	DstAddress string `json:"dst_address"`
+	SrcBlockSeqNo uint32 `json:"src_block_seq_no"`
+	DstBlockSeqNo uint32 `json:"dst_block_seq_no"`
 	Body  json.RawMessage `json:"body"`
 }
 
+func (s *Service) createTopics() {
+	NumPartitions := env.GetInt("NUM_PARTITIONS", 2)
+	operations, err := s.contractRepo.GetOperations(context.Background())
+	if err != nil {
+		log.Error().Msg(fmt.Sprintf("get interfaces: %v\n", err))
+	}
+	adminClient, err := kafka.NewAdminClient(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"})
+	if err != nil {
+		log.Error().Msg(fmt.Sprintf("create admin client: %v\n", err))
+	}
+	defer adminClient.Close()
+	for _, i := range operations {
+		topicName := string(i.OperationName)
+		adminClient.CreateTopics(context.Background(), []kafka.TopicSpecification{{
+			Topic:             topicName,
+			NumPartitions:     NumPartitions,
+			Config: map[string]string{
+				"retention.ms": "600000",
+				"cleanup.policy": "delete",
+				"segment.ms": "600000",
+				"segment.bytes": "104857600",
+			},
+		}})
+	}
+}
+
 func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
+	s.createTopics()
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"});
 	if err != nil {
 		panic(err)
@@ -39,6 +70,9 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 	}()	
 	for s.running() {
 		msg := <-msgChannel
+		if msg.OperationName == "" {
+			continue
+		}
 		var data map[string]interface{}
 		if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
@@ -55,15 +89,22 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		if err != nil {
 			log.Error().Msg(fmt.Sprintf("json marshal formmated data: %v\n", err))
 		}
+		// get message data
 		messageKafka := KafkaMessageSchema{
 			OpName: msg.OperationName,
 			OpCode: msg.OperationID,
-			Value: msg.Amount.ToUInt64(),
+			Value: uint64(0),
 			CreatedAt: msg.CreatedAt.Unix(),
 			CreatedLT: msg.CreatedLT,
-			SrcAddress: msg.SrcAddress.MustToTonutils().String(),
-			DstAddress: msg.DstAddress.MustToTonutils().String(),
-			Body:   json.RawMessage(jsonData),
+			SrcBlockSeqNo: msg.SrcBlockSeqNo,
+			DstBlockSeqNo: msg.DstBlockSeqNo,
+			Body: jsonData,
+		}
+		if msg.SrcAddress.MustToTonutils() != nil {
+			messageKafka.SrcAddress = msg.SrcAddress.MustToTonutils().String()
+		}
+		if msg.DstAddress.MustToTonutils() != nil {
+			messageKafka.DstAddress = msg.DstAddress.MustToTonutils().String()
 		}
 		messageKafkaJSON, err := json.Marshal(messageKafka)
 		if err != nil {

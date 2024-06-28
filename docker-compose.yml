@@ -30,6 +30,7 @@ services:
       WORKERS: ${WORKERS}
       LITESERVERS: ${LITESERVERS}
       DEBUG_LOGS: ${DEBUG_LOGS}
+      NUM_PARTITIONS: ${NUM_PARTITIONS}
     networks:
       - indexer_network
     logging:

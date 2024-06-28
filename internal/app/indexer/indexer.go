@@ -12,6 +12,7 @@ import (
 	"github.com/tonindexer/anton/internal/core/repository"
 	"github.com/tonindexer/anton/internal/core/repository/account"
 	"github.com/tonindexer/anton/internal/core/repository/block"
+	"github.com/tonindexer/anton/internal/core/repository/contract"
 	"github.com/tonindexer/anton/internal/core/repository/msg"
 	"github.com/tonindexer/anton/internal/core/repository/tx"
 )
@@ -25,6 +26,7 @@ type Service struct {
 	txRepo      core.TransactionRepository
 	msgRepo     repository.Message
 	accountRepo core.AccountRepository
+	contractRepo core.ContractRepository
 
 	run bool
 	mx  sync.RWMutex
@@ -49,6 +51,7 @@ func NewService(cfg *app.IndexerConfig) *Service {
 	s.msgRepo = msg.NewRepository(ch, pg)
 	s.blockRepo = block.NewRepository(ch, pg)
 	s.accountRepo = account.NewRepository(ch, pg)
+	s.contractRepo = contract.NewRepository(pg)
 
 	return s
 }
