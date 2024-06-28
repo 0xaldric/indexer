@@ -2,6 +2,7 @@ package indexer
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
@@ -15,6 +16,7 @@ import (
 type KafkaMessageSchema struct {
 	OpName string `json:"op_name"`
 	OpCode uint32 `json:"op_code"`
+	Hash string `json:"hash"`
 	Value uint64 `json:"value"`
 	CreatedAt int64 `json:"created_at"`
 	CreatedLT uint64 `json:"created_lt"`
@@ -29,7 +31,7 @@ func (s *Service) createTopics() {
 	NumPartitions := env.GetInt("NUM_PARTITIONS", 2)
 	operations, err := s.contractRepo.GetOperations(context.Background())
 	if err != nil {
-		log.Error().Msg(fmt.Sprintf("get interfaces: %v\n", err))
+		log.Error().Msg(fmt.Sprintf("get operations: %v\n", err))
 	}
 	adminClient, err := kafka.NewAdminClient(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"})
 	if err != nil {
@@ -71,6 +73,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 	for s.running() {
 		msg := <-msgChannel
 		if msg.OperationName == "" {
+			log.Error().Msg("operation name is empty")
 			continue
 		}
 		var data map[string]interface{}
@@ -93,6 +96,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		messageKafka := KafkaMessageSchema{
 			OpName: msg.OperationName,
 			OpCode: msg.OperationID,
+			Hash: base64.StdEncoding.EncodeToString(msg.Hash),
 			Value: uint64(0),
 			CreatedAt: msg.CreatedAt.Unix(),
 			CreatedLT: msg.CreatedLT,
