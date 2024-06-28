@@ -1,8 +1,9 @@
 [
   {
     "interface_name": "tonfun_factory",
+    "comment": "testnet first, mainnet second",
     "addresses": [
-      "EQA2dkxIALeZT_pRp5ybWF7d_JqhoBUevYME1eyVp_ZH2TmC"
+      "EQBN1RnFrOzz1L9uudyKw2Ng04RiZvqNYGn6IW9iP4BwmJnP"
     ],
     "definitions": {
     },
