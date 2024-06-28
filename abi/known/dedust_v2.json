@@ -828,9 +828,10 @@
   },
   {
     "interface_name": "dedust_v2_vault",
+    "definitions": {},
     "in_messages": [
       {
-        "op_name": "dedust_v2_swap",
+        "op_name": "internal_dedust_v2_swap",
         "op_code": "0xea06185d",
         "body": [
           {
@@ -845,28 +846,57 @@
           },
           {
             "name": "pool_addr",
-            "tlb_type": "addr",
-            "format": "addr"
+            "tlb_type": "addr"
           },
           {
-            "name": "unknown",
-            "tlb_type": "## 1",
-            "format": "bool"
+            "name": "swap_kind",
+            "tlb_type": "bool"
           },
           {
-            "name": "min_amount",
+            "name": "swap_limit",
             "tlb_type": ".",
             "format": "coins"
           },
           {
-            "name": "swap_step",
+            "name": "next",
             "tlb_type": "maybe ^",
-            "format": "cell"
+            "format": "cell",
+            "optional": true
           },
           {
             "name": "swap_params",
-            "tlb_type": "either . ^",
-            "format": "cell"
+            "tlb_type": "^",
+            "format": "struct",
+            "optional": true,
+            "struct_fields": [
+              {
+                "name": "deadline",
+                "tlb_type": "## 32",
+                "option": true
+              },
+              {
+                "name": "recipient_addr",
+                "tlb_type": "addr",
+                "option": true
+              },
+              {
+                "name": "referral_addr",
+                "tlb_type": "addr",
+                "option": true
+              },
+              {
+                "name": "fulfill_payload",
+                "tlb_type": "^",
+                "format": "cell",
+                "option": true
+              },
+              {
+                "name": "reject_payload",
+                "tlb_type": "maybe ^",
+                "format": "cell",
+                "option": true
+              }
+            ]
           }
         ]
       }

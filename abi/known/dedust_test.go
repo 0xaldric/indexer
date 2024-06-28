@@ -2,7 +2,6 @@ package known_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"testing"
 
@@ -36,15 +35,14 @@ func TestOperationDesc_DedustV2Vault(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     `dedust_v2_swap`,
-			boc:      `b5ee9c7201010201003d000165ea06185d000001903a2b0e3a405f5e100800efb1c38b87907acdb11f2d65b65da200b72e4716e142d83aa8b6067f01e1b3c2040100090000000002`,
-			expected: `{"data":{"creator":"EQDMqltTt5cr2xsM5K_aw_sInrQ8Ijyl4Ep4H1OVaZH6efgU","ton_fun_address":"EQDqcMtClISI7J12xKOuMmRGbnUzjnXdbNjChED0VXmvVaex","jetton_master_address":"EQBK-EcElH-nfBRKqFqhaFxRDFW296kVkzyO0DMX67vdmko-"}}`,
+			name:     `internal_dedust_v2_swap`,
+			boc:      `te6ccgECBAEAARUAAW/qBhhdAAAAC7aqBAJDuaygCAGCS6iT9M8XO5NnkRWXlIJQ+Q/SKfNidLJizQ55msajrlFUHYpjVAECjgAAAACAHPZ3UMgBLE+iKjQMWNLQ66In7oA5/Kc9w71rTTvTHDDQAqXyHUubwW9DTF/1P+4zQ3UO3VamYm1HG2yWpAqZbyJHAgMAjYAK225Dv75o8Qi0P+MQQO9exLtRbkG50bqQuDNePAuKDPACpfIdS5vBb0NMX/U/7jNDdQ7dVqZibUcbbJakCplvIkTmJaAgAIeACttuQ7++aPEItD/jEEDvXsS7UW5BudG6kLgzXjwLigzwAqXyHUubwW9DTF/1P+4zQ3UO3VamYm1HG2yWpAqZbyJEIA==`,
+			expected: `{"query_id":50309235714,"amount":"1000000000","pool_addr":"EQDBJdRJ-meLncmzyIrLykEofIfpFPmxOlkxZoc8zWNR14J0","swap_kind":false,"swap_limit":"91299030581","next":null,"swap_params":{"deadline":0,"recipient_addr":"EQDns7qGQAlifRFRoGLGloddET90Ac_lOe4d61pp3pjhhoqF","referral_addr":"EQCpfIdS5vBb0NMX_U_7jNDdQ7dVqZibUcbbJakCplvIkUxK","fulfill_payload":"te6cckEBAQEASQAAjYAK225Dv75o8Qi0P+MQQO9exLtRbkG50bqQuDNePAuKDPACpfIdS5vBb0NMX/U/7jNDdQ7dVqZibUcbbJakCplvIkTmJaAgI2C0LA==","reject_payload":"te6cckEBAQEARgAAh4AK225Dv75o8Qi0P+MQQO9exLtRbkG50bqQuDNePAuKDPACpfIdS5vBb0NMX/U/7jNDdQ7dVqZibUcbbJakCplvIkQgvGlNKQ=="}}`,
 		},
 	}
 
 	for _, test := range testCases {
 		j := loadOperation(t, i, test.name, test.boc)
-		fmt.Println(j)
 		require.Equal(t, test.expected, j)
 	}
 }
