@@ -138,11 +138,13 @@
           },
           {
             "name": "admin_address",
-            "stack_type": "slice"
+            "stack_type": "slice",
+            "format": "addr"
           },
           {
             "name": "jetton_master_address",
-            "stack_type": "slice"
+            "stack_type": "slice",
+            "format": "addr"
           }
         ]
       }
