@@ -30,6 +30,13 @@ func (s *Service) insertData(
 		_ = dbTx.Rollback()
 	}()
 
+	if err := func() error {
+		defer app.TimeTrack(time.Now(), "AddTransactions(%d)", len(tx))
+		return s.txRepo.AddTransactions(ctx, dbTx, tx)
+	}(); err != nil {
+		return errors.Wrap(err, "add transactions")
+	}
+
 	for _, message := range msg {
 		err := s.Parser.ParseMessagePayload(ctx, message)
 		if errors.Is(err, app.ErrImpossibleParsing) {
@@ -62,13 +69,6 @@ func (s *Service) insertData(
 		return s.msgRepo.AddMessages(ctx, dbTx, msg)
 	}(); err != nil {
 		return errors.Wrap(err, "add messages")
-	}
-
-	if err := func() error {
-		defer app.TimeTrack(time.Now(), "AddTransactions(%d)", len(tx))
-		return s.txRepo.AddTransactions(ctx, dbTx, tx)
-	}(); err != nil {
-		return errors.Wrap(err, "add transactions")
 	}
 
 	if err := func() error {
