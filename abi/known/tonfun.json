@@ -2,11 +2,8 @@
   {
     "interface_name": "tonfun_factory",
     "comment": "testnet first, mainnet second",
-    "addresses": [
-      "EQBN1RnFrOzz1L9uudyKw2Ng04RiZvqNYGn6IW9iP4BwmJnP"
-    ],
-    "definitions": {
-    },
+    "addresses": ["EQBN1RnFrOzz1L9uudyKw2Ng04RiZvqNYGn6IW9iP4BwmJnP"],
+    "definitions": {},
     "get_methods": [
       {
         "name": "get_ton_fun_factory_data",
@@ -56,9 +53,7 @@
         ]
       }
     ],
-    "in_messages": [
-
-    ],
+    "in_messages": [],
     "out_messages": [
       {
         "op_name": "create_ton_fun_success",
@@ -69,7 +64,7 @@
             "name": "data",
             "tlb_type": "^",
             "format": "struct",
-            "struct_fields": [         
+            "struct_fields": [
               {
                 "name": "creator",
                 "tlb_type": "addr",
@@ -84,7 +79,7 @@
                 "name": "jetton_master_address",
                 "tlb_type": "addr",
                 "format": "addr"
-              }      
+              }
             ]
           }
         ]
@@ -93,9 +88,7 @@
   },
   {
     "interface_name": "tonfun",
-    "definitions": {
-      
-    },
+    "definitions": {},
     "get_methods": [
       {
         "name": "get_ton_fun_data",
@@ -149,9 +142,7 @@
         ]
       }
     ],
-    "in_messages": [
-
-    ],
+    "in_messages": [],
     "out_messages": [
       {
         "op_name": "sell_jetton_success",
@@ -192,9 +183,14 @@
                     "name": "reserve1",
                     "tlb_type": ".",
                     "format": "coins"
+                  },
+                  {
+                    "name": "is_end_sale",
+                    "tlb_type": "## 1",
+                    "format": "uint64"
                   }
                 ]
-              }    
+              }
             ]
           }
         ]
@@ -240,7 +236,7 @@
                     "format": "coins"
                   }
                 ]
-              }    
+              }
             ]
           }
         ]
