@@ -4,14 +4,6 @@ x-anton-service: &anton-service
   image: "${IMAGE_NAME:-tonindexer/anton}:${IMAGE_TAG:-latest}"
   networks:
     - indexer_network
-  depends_on: &anton-deps
-    clickhouse:
-      condition: service_healthy
-    postgres:
-      condition: service_healthy
-  links:
-    - clickhouse
-    - postgres
   environment: &anton-env
     DB_CH_URL: "clickhouse://${DB_USERNAME}:${DB_PASSWORD}@clickhouse:9000/${DB_NAME}?sslmode=disable"
     DB_PG_URL: "postgres://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable"
@@ -20,7 +12,6 @@ services:
   indexer:
     <<: *anton-service
     depends_on:
-      <<: *anton-deps
       migrations:
         condition: service_completed_successfully
     command: idx
@@ -36,12 +27,11 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-file: "5"   # number of files or file count
+        max-file: "5" # number of files or file count
         max-size: "10m" # file size
   rescan:
     <<: *anton-service
     depends_on:
-      <<: *anton-deps
       migrations:
         condition: service_completed_successfully
     command: rescan
@@ -54,7 +44,6 @@ services:
   web:
     <<: *anton-service
     depends_on:
-      <<: *anton-deps
       migrations:
         condition: service_completed_successfully
     ports:
@@ -69,53 +58,5 @@ services:
   migrations:
     <<: *anton-service
     command: ["migrate", "up", "--init"]
-  clickhouse:
-    image: "clickhouse/clickhouse-server:22"
-    healthcheck:
-      test: wget --spider --no-verbose --tries=1 localhost:8123/ping || exit 1
-      interval: 5s
-      timeout: 5s
-      start_period: 60s
-      retries: 10
-    networks:
-      - indexer_network
-    volumes:
-      - idx_ch_data:/var/lib/clickhouse
-    expose:
-      - "9000"
-      - "8123"
-    ulimits:
-      nproc: 65535
-      nofile:
-        soft: 262144
-        hard: 262144
-    environment:
-      CLICKHOUSE_DB: "${DB_NAME}"
-      CLICKHOUSE_USER: "${DB_USERNAME}"
-      CLICKHOUSE_PASSWORD: "${DB_PASSWORD}"
-  postgres:
-    image: "postgres:15"
-    healthcheck:
-      test: pg_isready -U "${DB_USERNAME}" -d "${DB_NAME}" || exit 1
-      interval: 5s
-      timeout: 5s
-      start_period: 60s
-      retries: 10
-    networks:
-      - indexer_network
-    volumes:
-      - idx_pg_data:/var/lib/postgresql/data
-    expose:
-      - "5432"
-    environment:
-      PGDATA: /var/lib/postgresql/data/pgdata/
-      POSTGRES_DB: "${DB_NAME}"
-      POSTGRES_USER: "${DB_USERNAME}"
-      POSTGRES_PASSWORD: "${DB_PASSWORD}"
-
 networks:
   indexer_network:
-
-volumes:
-  idx_ch_data:
-  idx_pg_data:

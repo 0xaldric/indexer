@@ -1,0 +1,101 @@
+version: "3.5"
+
+services:
+  clickhouse:
+    image: "clickhouse/clickhouse-server:22"
+    shm_size: 128gb
+    healthcheck:
+      test: wget --spider --no-verbose --tries=1 localhost:8123/ping || exit 1
+      interval: 5s
+      timeout: 5s
+      start_period: 60s
+      retries: 10
+    networks:
+      - indexer_network
+    volumes:
+      - ./config/clickhouse_backup_disk.xml:/etc/clickhouse-server/config.d/backup_disk.xml
+      - ./backups/ch:/backups
+    expose:
+      - "9000"
+      - "8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    environment:
+      CLICKHOUSE_DB: "${DB_NAME}"
+      CLICKHOUSE_USER: "${DB_USERNAME}"
+      CLICKHOUSE_PASSWORD: "${DB_PASSWORD}"
+  postgres:
+    image: "postgres:15"
+    shm_size: 128gb
+    healthcheck:
+      test: pg_isready -U "${DB_USERNAME}" -d "${DB_NAME}" || exit 1
+      interval: 5s
+      timeout: 5s
+      start_period: 60s
+      retries: 10
+    networks:
+      - indexer_network
+    volumes:
+      - ./config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    expose:
+      - "5432"
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata/
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - ./zk-data:/var/lib/zookeeper/data
+      - ./zk-txn-logs:/var/lib/zookeeper/log
+    ports:
+      - 22181:2181
+    networks:
+      - indexer_network
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://${EXTERNAL_IP}:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+    volumes:
+      - ./kafka-data:/var/lib/kafka/data
+    networks:
+      - indexer_network
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8081:8080"
+    restart: always
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: "true"
+    networks:
+      - indexer_network
+
+networks:
+  indexer_network:
+
+volumes:
+  idx_ch_data:
+  idx_pg_data:
