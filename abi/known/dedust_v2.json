@@ -831,7 +831,7 @@
     "definitions": {},
     "in_messages": [
       {
-        "op_name": "internal_dedust_v2_swap",
+        "op_name": "dedust_v2_swap_ton_internal",
         "op_code": "0xea06185d",
         "body": [
           {
