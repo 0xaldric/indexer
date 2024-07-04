@@ -19,7 +19,6 @@ func parseOperationAttempt(msg *core.Message, op *core.ContractOperation) error 
 	} else {
 		msg.DstContract = op.ContractName
 	}
-
 	payloadCell, err := cell.FromBOC(msg.Body)
 	if err != nil {
 		return errors.Wrap(err, "msg body from boc")

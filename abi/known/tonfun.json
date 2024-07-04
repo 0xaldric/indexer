@@ -1,0 +1,246 @@
+[
+  {
+    "interface_name": "tonfun_factory",
+    "comment": "testnet first, mainnet second",
+    "addresses": ["EQBN1RnFrOzz1L9uudyKw2Ng04RiZvqNYGn6IW9iP4BwmJnP"],
+    "definitions": {},
+    "get_methods": [
+      {
+        "name": "get_ton_fun_factory_data",
+        "return_values": [
+          {
+            "name": "admin_address",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "create_fee",
+            "stack_type": "int"
+          },
+          {
+            "name": "collected_protocol_fee",
+            "stack_type": "int"
+          }
+        ]
+      },
+      {
+        "name": "get_initial_ton_fun_data_parse",
+        "return_values": [
+          {
+            "name": "initial_jetton_reserve",
+            "stack_type": "int"
+          },
+          {
+            "name": "liquidity_jetton_reserve",
+            "stack_type": "int"
+          },
+          {
+            "name": "virtual_ton_reserve",
+            "stack_type": "int"
+          },
+          {
+            "name": "virtual_jetton_reserve",
+            "stack_type": "int"
+          },
+          {
+            "name": "hard_cap",
+            "stack_type": "int"
+          },
+          {
+            "name": "ton_fun_protocol_fee",
+            "stack_type": "int"
+          }
+        ]
+      }
+    ],
+    "in_messages": [],
+    "out_messages": [
+      {
+        "op_name": "create_ton_fun_success",
+        "op_code": "0xa08855c",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "data",
+            "tlb_type": "^",
+            "format": "struct",
+            "struct_fields": [
+              {
+                "name": "creator",
+                "tlb_type": "addr",
+                "format": "addr"
+              },
+              {
+                "name": "ton_fun_address",
+                "tlb_type": "addr",
+                "format": "addr"
+              },
+              {
+                "name": "jetton_master_address",
+                "tlb_type": "addr",
+                "format": "addr"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "interface_name": "tonfun",
+    "definitions": {},
+    "get_methods": [
+      {
+        "name": "get_ton_fun_data",
+        "return_values": [
+          {
+            "name": "reserve0",
+            "stack_type": "int"
+          },
+          {
+            "name": "reserve1",
+            "stack_type": "int"
+          },
+          {
+            "name": "virtual_reserve0",
+            "stack_type": "int"
+          },
+          {
+            "name": "virtual_reserve1",
+            "stack_type": "int"
+          },
+          {
+            "name": "liquidity_reserve1",
+            "stack_type": "int"
+          },
+          {
+            "name": "hard_cap",
+            "stack_type": "int"
+          },
+          {
+            "name": "protocol_fee",
+            "stack_type": "int"
+          },
+          {
+            "name": "collected_protocol_fee",
+            "stack_type": "int"
+          },
+          {
+            "name": "is_end_sale",
+            "stack_type": "int"
+          },
+          {
+            "name": "admin_address",
+            "stack_type": "slice",
+            "format": "addr"
+          },
+          {
+            "name": "jetton_master_address",
+            "stack_type": "slice",
+            "format": "addr"
+          }
+        ]
+      }
+    ],
+    "in_messages": [],
+    "out_messages": [
+      {
+        "op_name": "sell_jetton_success",
+        "op_code": "0x4e884290",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "data",
+            "tlb_type": "^",
+            "format": "struct",
+            "struct_fields": [
+              {
+                "name": "amount_in",
+                "tlb_type": ".",
+                "format": "coins"
+              },
+              {
+                "name": "amount_out",
+                "tlb_type": ".",
+                "format": "coins"
+              },
+              {
+                "name": "sender_address",
+                "tlb_type": "addr",
+                "format": "addr"
+              },
+              {
+                "name": "reserveData",
+                "tlb_type": "^",
+                "format": "struct",
+                "struct_fields": [
+                  {
+                    "name": "reserve0",
+                    "tlb_type": ".",
+                    "format": "coins"
+                  },
+                  {
+                    "name": "reserve1",
+                    "tlb_type": ".",
+                    "format": "coins"
+                  },
+                  {
+                    "name": "is_end_sale",
+                    "tlb_type": "## 1",
+                    "format": "uint64"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "op_name": "buy_jetton_success",
+        "op_code": "0x23b49761",
+        "type": "external_out",
+        "body": [
+          {
+            "name": "data",
+            "tlb_type": "^",
+            "format": "struct",
+            "struct_fields": [
+              {
+                "name": "amount_in",
+                "tlb_type": ".",
+                "format": "coins"
+              },
+              {
+                "name": "amount_out",
+                "tlb_type": ".",
+                "format": "coins"
+              },
+              {
+                "name": "sender_address",
+                "tlb_type": "addr",
+                "format": "addr"
+              },
+              {
+                "name": "reserve_data",
+                "tlb_type": "^",
+                "format": "struct",
+                "struct_fields": [
+                  {
+                    "name": "reserve0",
+                    "tlb_type": ".",
+                    "format": "coins"
+                  },
+                  {
+                    "name": "reserve1",
+                    "tlb_type": ".",
+                    "format": "coins"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

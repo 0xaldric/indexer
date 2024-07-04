@@ -22,6 +22,11 @@ const (
 	ExternalOut = MessageType(tlb.MsgTypeExternalOut)
 )
 
+type KafkaMessageData struct {
+	Message *Message `json:"message"`
+	SchemaBody *abi.TLBFieldsDesc `json:"schema_body"`
+}
+
 type Message struct {
 	ch.CHModel    `ch:"messages,partition:toYYYYMM(created_at)" json:"-"`
 	bun.BaseModel `bun:"table:messages" json:"-"`

@@ -20,6 +20,7 @@ func (s *Service) insertData(
 	msg []*core.Message,
 	tx []*core.Transaction,
 	b []*core.Block,
+	msgChan chan<- *core.Message,
 ) error {
 	dbTx, err := s.DB.PG.Begin()
 	if err != nil {
@@ -28,6 +29,13 @@ func (s *Service) insertData(
 	defer func() {
 		_ = dbTx.Rollback()
 	}()
+
+	if err := func() error {
+		defer app.TimeTrack(time.Now(), "AddTransactions(%d)", len(tx))
+		return s.txRepo.AddTransactions(ctx, dbTx, tx)
+	}(); err != nil {
+		return errors.Wrap(err, "add transactions")
+	}
 
 	for _, message := range msg {
 		err := s.Parser.ParseMessagePayload(ctx, message)
@@ -43,6 +51,8 @@ func (s *Service) insertData(
 				Str("dst_addr", message.DstAddress.String()).
 				Uint32("op_id", message.OperationID).
 				Msg("parse message payload")
+		} else {
+			msgChan <- message
 		}
 	}
 
@@ -59,13 +69,6 @@ func (s *Service) insertData(
 		return s.msgRepo.AddMessages(ctx, dbTx, msg)
 	}(); err != nil {
 		return errors.Wrap(err, "add messages")
-	}
-
-	if err := func() error {
-		defer app.TimeTrack(time.Now(), "AddTransactions(%d)", len(tx))
-		return s.txRepo.AddTransactions(ctx, dbTx, tx)
-	}(); err != nil {
-		return errors.Wrap(err, "add transactions")
 	}
 
 	if err := func() error {
@@ -195,7 +198,7 @@ func (s *Service) uniqMessages(ctx context.Context, transactions []*core.Transac
 
 var lastLog = time.Now()
 
-func (s *Service) saveBlock(ctx context.Context, master *core.Block) {
+func (s *Service) saveBlock(ctx context.Context, master *core.Block, msgChan chan<- *core.Message) {
 	newBlocks := append([]*core.Block{master}, master.Shards...)
 
 	var newTransactions []*core.Transaction
@@ -203,7 +206,7 @@ func (s *Service) saveBlock(ctx context.Context, master *core.Block) {
 		newTransactions = append(newTransactions, newBlocks[i].Transactions...)
 	}
 
-	if err := s.insertData(ctx, s.uniqAccounts(newTransactions), s.uniqMessages(ctx, newTransactions), newTransactions, newBlocks); err != nil {
+	if err := s.insertData(ctx, s.uniqAccounts(newTransactions), s.uniqMessages(ctx, newTransactions), newTransactions, newBlocks, msgChan); err != nil {
 		panic(err)
 	}
 
@@ -215,7 +218,7 @@ func (s *Service) saveBlock(ctx context.Context, master *core.Block) {
 	lvl.Uint32("last_inserted_seq", master.SeqNo).Msg("inserted new block")
 }
 
-func (s *Service) saveBlocksLoop(results <-chan *core.Block) {
+func (s *Service) saveBlocksLoop(results <-chan *core.Block, msgChan chan<- *core.Message) {
 	t := time.NewTicker(100 * time.Millisecond)
 	defer t.Stop()
 
@@ -234,6 +237,6 @@ func (s *Service) saveBlocksLoop(results <-chan *core.Block) {
 			Int("shards", len(b.Shards)).
 			Msg("new master")
 
-		s.saveBlock(context.Background(), b)
+		s.saveBlock(context.Background(), b, msgChan)
 	}
 }

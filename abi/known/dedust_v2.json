@@ -1,9 +1,7 @@
 [
   {
     "interface_name": "dedust_v2_factory",
-    "addresses": [
-      "EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67"
-    ],
+    "addresses": ["EQBfBWT7X2BHg9tXAxzhz2aKiNTU1tpt5NsiK0uSDW_YAJ67"],
     "definitions": {
       "pool_params": [
         {
@@ -830,6 +828,79 @@
   },
   {
     "interface_name": "dedust_v2_vault",
+    "definitions": {},
+    "in_messages": [
+      {
+        "op_name": "dedust_v2_swap_ton_internal",
+        "op_code": "0xea06185d",
+        "body": [
+          {
+            "name": "query_id",
+            "tlb_type": "## 64",
+            "format": "uint64"
+          },
+          {
+            "name": "amount",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "pool_addr",
+            "tlb_type": "addr"
+          },
+          {
+            "name": "swap_kind",
+            "tlb_type": "bool"
+          },
+          {
+            "name": "swap_limit",
+            "tlb_type": ".",
+            "format": "coins"
+          },
+          {
+            "name": "next",
+            "tlb_type": "maybe ^",
+            "format": "cell",
+            "optional": true
+          },
+          {
+            "name": "swap_params",
+            "tlb_type": "^",
+            "format": "struct",
+            "optional": true,
+            "struct_fields": [
+              {
+                "name": "deadline",
+                "tlb_type": "## 32",
+                "option": true
+              },
+              {
+                "name": "recipient_addr",
+                "tlb_type": "addr",
+                "option": true
+              },
+              {
+                "name": "referral_addr",
+                "tlb_type": "addr",
+                "option": true
+              },
+              {
+                "name": "fulfill_payload",
+                "tlb_type": "^",
+                "format": "cell",
+                "option": true
+              },
+              {
+                "name": "reject_payload",
+                "tlb_type": "maybe ^",
+                "format": "cell",
+                "option": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
     "get_methods": [
       {
         "name": "get_version",
