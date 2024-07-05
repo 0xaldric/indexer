@@ -831,7 +831,7 @@
     "definitions": {},
     "in_messages": [
       {
-        "op_name": "dedust_v2_swap_ton_internal",
+        "op_name": "dedust_v2_native_vault_swap",
         "op_code": "0xea06185d",
         "body": [
           {
@@ -897,6 +897,17 @@
                 "option": true
               }
             ]
+          }
+        ]
+      },
+      {
+        "op_name": "dedust_v2_native_vault_add_lp",
+        "op_code": "0xd55e4686",
+        "body": [
+          {
+            "name": "body_data",
+            "tlb_type": ".",
+            "format": "cell"
           }
         ]
       }
