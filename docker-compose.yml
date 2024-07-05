@@ -29,6 +29,7 @@ services:
       options:
         max-file: "5" # number of files or file count
         max-size: "10m" # file size
+    restart: always
   rescan:
     <<: *anton-service
     depends_on:
