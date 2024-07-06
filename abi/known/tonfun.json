@@ -234,6 +234,11 @@
                     "name": "reserve1",
                     "tlb_type": ".",
                     "format": "coins"
+                  },
+                  {
+                    "name": "is_end_sale",
+                    "tlb_type": "## 1",
+                    "format": "uint64"
                   }
                 ]
               }

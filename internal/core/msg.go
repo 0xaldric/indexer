@@ -23,7 +23,7 @@ const (
 )
 
 type KafkaMessageData struct {
-	Message *Message `json:"message"`
+	Message    *Message           `json:"message"`
 	SchemaBody *abi.TLBFieldsDesc `json:"schema_body"`
 }
 

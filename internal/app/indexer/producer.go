@@ -3,6 +3,7 @@ package indexer
 import (
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 
@@ -14,17 +15,19 @@ import (
 )
 
 type KafkaMessageSchema struct {
-	OpName string `json:"op_name"`
-	OpCode uint32 `json:"op_code"`
-	Hash string `json:"hash"`
-	Value uint64 `json:"value"`
-	CreatedAt int64 `json:"created_at"`
-	CreatedLT uint64 `json:"created_lt"`
-	SrcAddress string `json:"src_address"`
-	DstAddress string `json:"dst_address"`
-	SrcBlockSeqNo uint32 `json:"src_block_seq_no"`
-	DstBlockSeqNo uint32 `json:"dst_block_seq_no"`
-	Body  json.RawMessage `json:"body"`
+	OpName        string          `json:"op_name"`
+	OpCode        uint32          `json:"op_code"`
+	Hash          string          `json:"hash"`
+	Value         uint64          `json:"value"`
+	CreatedAt     int64           `json:"created_at"`
+	CreatedLT     uint64          `json:"created_lt"`
+	SrcAddress    string          `json:"src_address"`
+	DstAddress    string          `json:"dst_address"`
+	SrcBlockSeqNo uint32          `json:"src_block_seq_no"`
+	DstBlockSeqNo uint32          `json:"dst_block_seq_no"`
+	Body          json.RawMessage `json:"body"`
+	SrcTxHash     string          `json:"src_tx_hash"`
+	DstTxHash     string          `json:"dst_tx_hash"`
 }
 
 func (s *Service) createTopics() {
@@ -41,13 +44,13 @@ func (s *Service) createTopics() {
 	for _, i := range operations {
 		topicName := string(i.OperationName)
 		adminClient.CreateTopics(context.Background(), []kafka.TopicSpecification{{
-			Topic:             topicName,
-			NumPartitions:     NumPartitions,
+			Topic:         topicName,
+			NumPartitions: NumPartitions,
 			Config: map[string]string{
-				"retention.ms": "600000",
+				"retention.ms":   "600000",
 				"cleanup.policy": "delete",
-				"segment.ms": "600000",
-				"segment.bytes": "104857600",
+				"segment.ms":     "600000",
+				"segment.bytes":  "104857600",
 			},
 		}})
 	}
@@ -55,7 +58,7 @@ func (s *Service) createTopics() {
 
 func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 	s.createTopics()
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"});
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"})
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +72,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 				}
 			}
 		}
-	}()	
+	}()
 	for s.running() {
 		msg := <-msgChannel
 		if msg.OperationName == "" {
@@ -94,15 +97,17 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		}
 		// get message data
 		messageKafka := KafkaMessageSchema{
-			OpName: msg.OperationName,
-			OpCode: msg.OperationID,
-			Hash: base64.StdEncoding.EncodeToString(msg.Hash),
-			Value: uint64(0),
-			CreatedAt: msg.CreatedAt.Unix(),
-			CreatedLT: msg.CreatedLT,
+			OpName:        msg.OperationName,
+			OpCode:        msg.OperationID,
+			Hash:          base64.StdEncoding.EncodeToString(msg.Hash),
+			Value:         uint64(0),
+			CreatedAt:     msg.CreatedAt.Unix(),
+			CreatedLT:     msg.CreatedLT,
 			SrcBlockSeqNo: msg.SrcBlockSeqNo,
 			DstBlockSeqNo: msg.DstBlockSeqNo,
-			Body: jsonData,
+			Body:          jsonData,
+			SrcTxHash:     hex.EncodeToString(msg.SrcTxHash),
+			DstTxHash:     hex.EncodeToString(msg.DstTxHash),
 		}
 		if msg.SrcAddress.MustToTonutils() != nil {
 			messageKafka.SrcAddress = msg.SrcAddress.MustToTonutils().String()
@@ -119,7 +124,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			TopicPartition: kafka.TopicPartition{Topic: &topicName, Partition: kafka.PartitionAny},
 			Value:          json.RawMessage(messageKafkaJSON),
 		}, nil)
-		
+
 		if err != nil {
 			log.Error().Msg(fmt.Sprintf("json marshal kafka message: %v\n", err))
 		}
