@@ -26,6 +26,7 @@ type KafkaMessageSchema struct {
 	SrcBlockSeqNo uint32          `json:"src_block_seq_no"`
 	DstBlockSeqNo uint32          `json:"dst_block_seq_no"`
 	Body          json.RawMessage `json:"body"`
+	BodyHex       string          `json:"body_hex"`
 	SrcTxHash     string          `json:"src_tx_hash"`
 	DstTxHash     string          `json:"dst_tx_hash"`
 }
@@ -106,6 +107,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			SrcBlockSeqNo: msg.SrcBlockSeqNo,
 			DstBlockSeqNo: msg.DstBlockSeqNo,
 			Body:          jsonData,
+			BodyHex:       hex.EncodeToString(msg.Body),
 			SrcTxHash:     hex.EncodeToString(msg.SrcTxHash),
 			DstTxHash:     hex.EncodeToString(msg.DstTxHash),
 		}
