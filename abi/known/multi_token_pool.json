@@ -1,0 +1,148 @@
+[
+	{
+		"interface_name": "multi-token-pool",
+		"addresses": ["kQAlSBe3Xs1E9vuUscYKZbpjxIjyIBWqUnYT9_QBjwRn1Knd"],
+		"definitions": {},
+		"get_methods": [],
+		"in_messages": [],
+		"out_messages": [
+			{
+				"op_name": "create_pool_success",
+				"op_code": "0xef12c3d4",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256",
+								"format": "bigInt"
+							},
+							{
+								"name": "token_in",
+								"tlb_type": "^"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "^"
+							}
+						]
+					}
+				]
+			},
+			{
+				"op_name": "provide_liquidity_success",
+				"op_code": "0xb5f82f3c",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256",
+								"format": "bigInt"
+							},
+							{
+								"name": "token_in",
+								"tlb_type": "^"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "^"
+							}
+						]
+					}
+				]
+			},
+			{
+				"op_name": "remove_liquidity_success",
+				"op_code": "0xb03abb18",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256",
+								"format": "bigInt"
+							},
+							{
+								"name": "token_in",
+								"tlb_type": "^"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "^"
+							}
+						]
+					}
+				]
+			},
+			{
+				"op_name": "swap_success",
+				"op_code": "0x7dd7fca3",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "to_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256",
+								"format": "bigInt"
+							},
+							{
+								"name": "token_info",
+								"tlb_type": "^"
+							},
+							{
+								"name": "amout_info",
+								"tlb_type": "^"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "^"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]
