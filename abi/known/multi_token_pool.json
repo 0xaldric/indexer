@@ -91,7 +91,7 @@
 								"format": "bigInt"
 							},
 							{
-								"name": "tokens_in",
+								"name": "tokens_out",
 								"tlb_type": "^"
 							},
 							{
