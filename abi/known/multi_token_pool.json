@@ -27,7 +27,7 @@
 								"format": "bigInt"
 							},
 							{
-								"name": "token_in",
+								"name": "tokens_in",
 								"tlb_type": "^"
 							},
 							{
@@ -59,7 +59,7 @@
 								"format": "bigInt"
 							},
 							{
-								"name": "token_in",
+								"name": "tokens_in",
 								"tlb_type": "^"
 							},
 							{
@@ -91,7 +91,7 @@
 								"format": "bigInt"
 							},
 							{
-								"name": "token_in",
+								"name": "tokens_in",
 								"tlb_type": "^"
 							},
 							{
