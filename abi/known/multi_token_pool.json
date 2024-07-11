@@ -1,8 +1,58 @@
 [
 	{
-		"interface_name": "multi-token-pool",
+		"interface_name": "multi_token_pool",
 		"addresses": ["kQAlSBe3Xs1E9vuUscYKZbpjxIjyIBWqUnYT9_QBjwRn1Knd"],
-		"definitions": {},
+		"definitions": {
+			"tokens_dict": [
+				{
+					"name": "token_walelt_address",
+					"tlb_type": "addr",
+					"format": "addr"
+				},
+				{
+					"name": "weight",
+					"tlb_type": "## 64",
+					"format": "uint64"
+				},
+				{
+					"name": "scaling_factor",
+					"tlb_type": "## 128",
+					"format": "bigInt"
+				},
+				{
+					"name": "amount",
+					"tlb_type": ".",
+					"format": "coins"
+				},
+				{
+					"name": "collected_protocol_fee",
+					"tlb_type": ".",
+					"format": "coins"
+				}
+			],
+			"tokens_in_or_out":  [
+				{
+					"name": "token_walelt_address",
+					"tlb_type": "addr",
+					"format": "addr"
+				},
+				{
+					"name": "weight",
+					"tlb_type": "## 64",
+					"format": "uint64"
+				},
+				{
+					"name": "scaling_factor",
+					"tlb_type": "## 128",
+					"format": "bigInt"
+				},
+				{
+					"name": "amount",
+					"tlb_type": ".",
+					"format": "coins"
+				}
+			]
+		},
 		"get_methods": [],
 		"in_messages": [],
 		"out_messages": [
@@ -28,11 +78,18 @@
 							},
 							{
 								"name": "tokens_in",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_in_or_out"
 							},
 							{
 								"name": "tokens_dict",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							},
+							{
+								"name": "amount_bpt_out",
+								"tlb_type": ".",
+								"format": "coins"
 							}
 						]
 					}
@@ -60,11 +117,18 @@
 							},
 							{
 								"name": "tokens_in",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_in_or_out"
 							},
 							{
 								"name": "tokens_dict",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							},
+							{
+								"name": "amount_bpt_out",
+								"tlb_type": ".",
+								"format": "coins"
 							}
 						]
 					}
@@ -92,11 +156,18 @@
 							},
 							{
 								"name": "tokens_out",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_in_or_out"
 							},
 							{
 								"name": "tokens_dict",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							},
+							{
+								"name": "amount_bpt_in",
+								"tlb_type": ".",
+								"format": "coins"
 							}
 						]
 					}
@@ -129,15 +200,42 @@
 							},
 							{
 								"name": "token_info",
-								"tlb_type": "^"
+								"tlb_type": "^",
+								"format": "struct",
+								"struct_fields": [
+									{
+										"name": "token_in_address",
+										"tlb_type": "addr",
+										"format": "addr"
+									},
+									{
+										"name": "token_out_address",
+										"tlb_type": "addr",
+										"format": "addr"
+									}
+								]
 							},
 							{
 								"name": "amount_info",
-								"tlb_type": "^"
+								"tlb_type": "^",
+								"format": "struct",
+								"struct_fields": [
+									{
+										"name": "amount_in",
+										"tlb_type": ".",
+										"format": "coins"
+									},
+									{
+										"name": "amount_out",
+										"tlb_type": ".",
+										"format": "coins"
+									}
+								]
 							},
 							{
 								"name": "tokens_dict",
-								"tlb_type": "^"
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
 							}
 						]
 					}
