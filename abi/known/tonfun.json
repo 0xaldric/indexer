@@ -2,7 +2,7 @@
   {
     "interface_name": "tonfun_factory",
     "comment": "testnet first, mainnet second",
-    "addresses": ["EQBN1RnFrOzz1L9uudyKw2Ng04RiZvqNYGn6IW9iP4BwmJnP"],
+    "addresses": ["kQBf2Xc-07OLPlv4GNKQffy3rLuhRvXQQWLA7Dqiuh4kt5w4"],
     "definitions": {},
     "get_methods": [
       {
@@ -48,6 +48,10 @@
           },
           {
             "name": "ton_fun_protocol_fee",
+            "stack_type": "int"
+          },
+          {
+            "name": "ref_fee_percent",
             "stack_type": "int"
           }
         ]
@@ -123,6 +127,10 @@
           },
           {
             "name": "collected_protocol_fee",
+            "stack_type": "int"
+          },
+          {
+            "name": "ref_fee_percent",
             "stack_type": "int"
           },
           {
