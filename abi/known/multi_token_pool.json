@@ -73,8 +73,7 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256",
-								"format": "bigInt"
+								"tlb_type": "## 256"
 							},
 							{
 								"name": "tokens_in",
@@ -112,8 +111,7 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256",
-								"format": "bigInt"
+								"tlb_type": "## 256"
 							},
 							{
 								"name": "tokens_in",
@@ -151,8 +149,7 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256",
-								"format": "bigInt"
+								"tlb_type": "## 256"							
 							},
 							{
 								"name": "tokens_out",
@@ -195,8 +192,7 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256",
-								"format": "bigInt"
+								"tlb_type": "## 256"
 							},
 							{
 								"name": "token_info",
