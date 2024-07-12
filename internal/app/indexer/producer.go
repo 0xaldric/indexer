@@ -80,7 +80,7 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 			log.Error().Msg("operation name is empty")
 			continue
 		}
-		var data map[string]interface{}
+		var data map[string]json.RawMessage
 		if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
 		}

@@ -44,6 +44,12 @@ func tlbMakeDesc(t reflect.Type, skipMagic ...bool) (ret TLBFieldsDesc, err erro
 		if len(skipMagic) > 0 && skipMagic[0] && i == 0 && f.Type == reflect.TypeOf(tlb.Magic{}) {
 			continue // skip tlb constructor tag as it has to be inside OperationDesc
 		}
+		
+		if f.Type.Kind() == reflect.Map {
+			schema.Format = TLBCell
+			ret = append(ret, schema)
+			continue
+		}
 
 		ft, ok := typeNameRMap[f.Type]
 		switch {

@@ -17,6 +17,7 @@ var (
 	StonFiRouter    abi.ContractName = "stonfi_router"
 	TonfunFactory  abi.ContractName = "tonfun_factory"
 	Tonfun 			 abi.ContractName = "tonfun"
+	MultiTokenPool abi.ContractName = "multi_token_pool"
 )
 
 var (

@@ -1,0 +1,242 @@
+[
+	{
+		"interface_name": "multi_token_pool",
+		"addresses": ["kQAlSBe3Xs1E9vuUscYKZbpjxIjyIBWqUnYT9_QBjwRn1Knd"],
+		"definitions": {
+			"tokens_dict": [
+				{
+					"name": "token_walelt_address",
+					"tlb_type": "addr",
+					"format": "addr"
+				},
+				{
+					"name": "weight",
+					"tlb_type": "## 64",
+					"format": "uint64"
+				},
+				{
+					"name": "scaling_factor",
+					"tlb_type": "## 128",
+					"format": "bigInt"
+				},
+				{
+					"name": "amount",
+					"tlb_type": ".",
+					"format": "coins"
+				},
+				{
+					"name": "collected_protocol_fee",
+					"tlb_type": ".",
+					"format": "coins"
+				}
+			],
+			"tokens_in_or_out":  [
+				{
+					"name": "token_walelt_address",
+					"tlb_type": "addr",
+					"format": "addr"
+				},
+				{
+					"name": "weight",
+					"tlb_type": "## 64",
+					"format": "uint64"
+				},
+				{
+					"name": "scaling_factor",
+					"tlb_type": "## 128",
+					"format": "bigInt"
+				},
+				{
+					"name": "amount",
+					"tlb_type": ".",
+					"format": "coins"
+				}
+			]
+		},
+		"get_methods": [],
+		"in_messages": [],
+		"out_messages": [
+			{
+				"op_name": "create_pool_success",
+				"op_code": "0xef12c3d4",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256"
+							},
+							{
+								"name": "tokens_in",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_in_or_out"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							},
+							{
+								"name": "amount_bpt_out",
+								"tlb_type": ".",
+								"format": "coins"
+							}
+						]
+					}
+				]
+			},
+			{
+				"op_name": "provide_liquidity_success",
+				"op_code": "0xb5f82f3c",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256"
+							},
+							{
+								"name": "tokens_in",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_in_or_out"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							},
+							{
+								"name": "amount_bpt_out",
+								"tlb_type": ".",
+								"format": "coins"
+							}
+						]
+					}
+				]
+			},
+			{
+				"op_name": "remove_liquidity_success",
+				"op_code": "0xb03abb18",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256"							
+							},
+							{
+								"name": "tokens_out",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_in_or_out"
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							},
+							{
+								"name": "amount_bpt_in",
+								"tlb_type": ".",
+								"format": "coins"
+							}
+						]
+					}
+				]
+			},
+			{
+				"op_name": "swap_success",
+				"op_code": "0x7dd7fca3",
+				"type": "external_out",
+				"body": [
+					{
+						"name": "data",
+						"tlb_type": "^",
+						"format": "struct",
+						"struct_fields": [
+							{
+								"name": "user_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "to_address",
+								"tlb_type": "addr",
+								"format": "addr"
+							},
+							{
+								"name": "pool_key",
+								"tlb_type": "## 256"
+							},
+							{
+								"name": "token_info",
+								"tlb_type": "^",
+								"format": "struct",
+								"struct_fields": [
+									{
+										"name": "token_in_address",
+										"tlb_type": "addr",
+										"format": "addr"
+									},
+									{
+										"name": "token_out_address",
+										"tlb_type": "addr",
+										"format": "addr"
+									}
+								]
+							},
+							{
+								"name": "amount_info",
+								"tlb_type": "^",
+								"format": "struct",
+								"struct_fields": [
+									{
+										"name": "amount_in",
+										"tlb_type": ".",
+										"format": "coins"
+									},
+									{
+										"name": "amount_out",
+										"tlb_type": ".",
+										"format": "coins"
+									}
+								]
+							},
+							{
+								"name": "tokens_dict",
+								"tlb_type": "dict 256 -> ^",
+								"format": "tokens_dict"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]
