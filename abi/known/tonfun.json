@@ -2,7 +2,7 @@
   {
     "interface_name": "tonfun_factory",
     "comment": "testnet first, mainnet second",
-    "addresses": ["kQBf2Xc-07OLPlv4GNKQffy3rLuhRvXQQWLA7Dqiuh4kt5w4"],
+    "addresses": ["kQBf2Xc-07OLPlv4GNKQffy3rLuhRvXQQWLA7Dqiuh4kt5w4", "EQB4dAcYYSjEj95ZRae5dAvmOk6_SwoClT2kGbuO27UTZ6Wb"],
     "definitions": {},
     "get_methods": [
       {
