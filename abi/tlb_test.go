@@ -35,7 +35,7 @@ type Operation struct {
 
 var testPayloadShortSchema = `[{"name":"small_int","tlb_type":"## 32"},{"name":"big_int","tlb_type":"## 128"},{"name":"ref_struct","tlb_type":"^","struct_fields":[{"name":"addr","tlb_type":"addr"}]},{"name":"embed_struct","tlb_type":"^","struct_fields":[{"name":"bits","tlb_type":"bits 32"}]},{"name":"maybe_cell","tlb_type":"maybe ^"},{"name":"either_cell","tlb_type":"either ^ ."}]`
 var testPayloadFullSchema = `[{"name":"small_int","tlb_type":"## 32","format":"uint32"},{"name":"big_int","tlb_type":"## 128","format":"bigInt"},{"name":"ref_struct","tlb_type":"^","format":"struct","struct_fields":[{"name":"addr","tlb_type":"addr","format":"addr"}]},{"name":"embed_struct","tlb_type":"^","format":"struct","struct_fields":[{"name":"bits","tlb_type":"bits 32","format":"bytes"}]},{"name":"maybe_cell","tlb_type":"maybe ^","format":"cell"},{"name":"either_cell","tlb_type":"either ^ .","format":"cell"}]`
-var testTokensDictSchema = `[{"name":"token_walelt_address","tlb_type":"addr","format":"addr"},{"name":"weight","tlb_type":"## 64","format":"uint64"},{"name":"scaling_factor","tlb_type":"## 128","format":"bigInt"},{"name":"amount","tlb_type":".","format":"coins"},{"name":"collected_protocol_fee","tlb_type":".","format":"coins"}]`;
+var testTokensDictSchema = `[{"name":"token_wallet_address","tlb_type":"addr","format":"addr"},{"name":"weight","tlb_type":"## 64","format":"uint64"},{"name":"scaling_factor","tlb_type":"## 128","format":"bigInt"},{"name":"amount","tlb_type":".","format":"coins"},{"name":"collected_protocol_fee","tlb_type":".","format":"coins"}]`;
 
 func TestNewTLBDesc(t *testing.T) {
 	var d1, d2 abi.TLBFieldsDesc

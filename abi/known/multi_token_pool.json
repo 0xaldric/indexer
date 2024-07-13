@@ -5,7 +5,7 @@
 		"definitions": {
 			"tokens_dict": [
 				{
-					"name": "token_walelt_address",
+					"name": "token_wallet_address",
 					"tlb_type": "addr",
 					"format": "addr"
 				},
@@ -32,7 +32,7 @@
 			],
 			"tokens_in_or_out":  [
 				{
-					"name": "token_walelt_address",
+					"name": "token_wallet_address",
 					"tlb_type": "addr",
 					"format": "addr"
 				},
