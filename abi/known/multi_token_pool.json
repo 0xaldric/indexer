@@ -1,7 +1,9 @@
 [
 	{
 		"interface_name": "multi_token_pool",
-		"addresses": ["kQAlSBe3Xs1E9vuUscYKZbpjxIjyIBWqUnYT9_QBjwRn1Knd"],
+		"addresses": [
+			"kQAlSBe3Xs1E9vuUscYKZbpjxIjyIBWqUnYT9_QBjwRn1Knd"
+		],
 		"definitions": {
 			"tokens_dict": [
 				{
@@ -30,7 +32,7 @@
 					"format": "coins"
 				}
 			],
-			"tokens_in_or_out":  [
+			"tokens_in_or_out": [
 				{
 					"name": "token_wallet_address",
 					"tlb_type": "addr",
@@ -73,7 +75,8 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256"
+								"tlb_type": "## 256",
+								"format": "bigInt"
 							},
 							{
 								"name": "tokens_in",
@@ -111,7 +114,8 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256"
+								"tlb_type": "## 256",
+								"format": "uint256"
 							},
 							{
 								"name": "tokens_in",
@@ -149,7 +153,7 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256"							
+								"tlb_type": "## 256"
 							},
 							{
 								"name": "tokens_out",

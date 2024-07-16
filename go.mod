@@ -6,6 +6,8 @@ toolchain go1.22.4
 
 replace github.com/uptrace/go-clickhouse v0.3.1 => github.com/iam047801/go-clickhouse v0.0.0-20240229162752-6a94cfc6c817 // go-clickhouse branch with dirty fixes
 
+replace github.com/xssnick/tonutils-go v1.9.5 => github.com/0xaldric/tonutils-go v1.0.0
+
 require (
 	github.com/allisson/go-env v0.3.0
 	github.com/gin-gonic/gin v1.9.0
@@ -84,3 +86,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	mellium.im/sasl v0.3.1 // indirect
 )
+
+// require github.com/0xaldric/tonutils-go v1.0.0

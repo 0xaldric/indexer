@@ -44,7 +44,7 @@ func tlbMakeDesc(t reflect.Type, skipMagic ...bool) (ret TLBFieldsDesc, err erro
 		if len(skipMagic) > 0 && skipMagic[0] && i == 0 && f.Type == reflect.TypeOf(tlb.Magic{}) {
 			continue // skip tlb constructor tag as it has to be inside OperationDesc
 		}
-		
+
 		if f.Type.Kind() == reflect.Map {
 			schema.Format = TLBCell
 			ret = append(ret, schema)
@@ -81,6 +81,21 @@ func tlbMakeDesc(t reflect.Type, skipMagic ...bool) (ret TLBFieldsDesc, err erro
 	}
 
 	return ret, nil
+}
+
+func getUnsigned256BitInt() *big.Int {
+	// Create a new big.Int
+	result := new(big.Int)
+
+	// Set the value to 2^256 - 1 (maximum 256-bit unsigned integer)
+	max := new(big.Int)
+	max.Exp(big.NewInt(2), big.NewInt(256), nil)
+	max.Sub(max, big.NewInt(1))
+
+	// Set result to a value (for example, let's use the max value)
+	result.Set(max)
+
+	return result
 }
 
 func tlbParseSettingsInt(settings []string) (reflect.Type, error) {
