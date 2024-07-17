@@ -84,17 +84,17 @@ func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 		if err := json.Unmarshal([]byte(msg.DataJSON), &data); err != nil {
 			log.Error().Msg(fmt.Sprintf("json unmarshal parsed payload: %v\n", err))
 		}
-		formmatedData := make(map[string]json.RawMessage)
+		formatData := make(map[string]json.RawMessage)
 		for i, body := range data {
 			jsonBody, err := json.Marshal(body)
 			if err != nil {
 				log.Error().Msg(fmt.Sprintf("json marshal body: %v\n", err))
 			}
-			formmatedData[i] = json.RawMessage(jsonBody)
+			formatData[i] = json.RawMessage(jsonBody)
 		}
-		jsonData, err := json.Marshal(formmatedData)
+		jsonData, err := json.Marshal(formatData)
 		if err != nil {
-			log.Error().Msg(fmt.Sprintf("json marshal formmated data: %v\n", err))
+			log.Error().Msg(fmt.Sprintf("json marshal format data: %v\n", err))
 		}
 		// get message data
 		messageKafka := KafkaMessageSchema{
