@@ -92,6 +92,11 @@
 								"name": "amount_apt_out",
 								"tlb_type": ".",
 								"format": "coins"
+							},
+							{
+								"name": "total_supply_apt",
+								"tlb_type": ".",
+								"format": "coins"
 							}
 						]
 					}
@@ -130,6 +135,11 @@
 								"name": "amount_apt_out",
 								"tlb_type": ".",
 								"format": "coins"
+							},
+							{
+								"name": "total_supply_apt",
+								"tlb_type": ".",
+								"format": "coins"
 							}
 						]
 					}
@@ -166,6 +176,11 @@
 							},
 							{
 								"name": "amount_apt_in",
+								"tlb_type": ".",
+								"format": "coins"
+							},
+							{
+								"name": "total_supply_apt",
 								"tlb_type": ".",
 								"format": "coins"
 							}
