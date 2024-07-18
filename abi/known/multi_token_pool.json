@@ -89,7 +89,7 @@
 								"format": "tokens_dict"
 							},
 							{
-								"name": "amount_bpt_out",
+								"name": "amount_apt_out",
 								"tlb_type": ".",
 								"format": "coins"
 							}
@@ -114,8 +114,7 @@
 							},
 							{
 								"name": "pool_key",
-								"tlb_type": "## 256",
-								"format": "uint256"
+								"tlb_type": "## 256"
 							},
 							{
 								"name": "tokens_in",
@@ -128,7 +127,7 @@
 								"format": "tokens_dict"
 							},
 							{
-								"name": "amount_bpt_out",
+								"name": "amount_apt_out",
 								"tlb_type": ".",
 								"format": "coins"
 							}
@@ -166,7 +165,7 @@
 								"format": "tokens_dict"
 							},
 							{
-								"name": "amount_bpt_in",
+								"name": "amount_apt_in",
 								"tlb_type": ".",
 								"format": "coins"
 							}
