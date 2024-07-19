@@ -13,6 +13,7 @@ services:
     networks:
       - indexer_network
     volumes:
+      - idx_ch_data:/var/lib/clickhouse
       - ./config/clickhouse_backup_disk.xml:/etc/clickhouse-server/config.d/backup_disk.xml
       - ./backups/ch:/backups
     expose:
@@ -34,7 +35,7 @@ services:
     image: "postgres:15"
     shm_size: 128gb
     healthcheck:
-      test: pg_isready -U "${DB_USERNAME}" -d "${DB_NAME}" || exit 1
+      test: pg_isready -U "${PG_DB_USERNAME}" -d "${PG_DB_NAME}" || exit 1
       interval: 5s
       timeout: 5s
       start_period: 60s
@@ -42,6 +43,7 @@ services:
     networks:
       - indexer_network
     volumes:
+      - idx_pg_data:/var/lib/postgresql/data
       - ./config/postgresql.conf:/etc/postgresql/postgresql.conf:ro
     expose:
       - "5432"
