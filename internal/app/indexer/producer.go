@@ -59,7 +59,7 @@ func (s *Service) createTopics() {
 
 func (s *Service) produceMessageLoop(msgChannel <-chan *core.Message) {
 	s.createTopics()
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": s.KafkaURI})
 	if err != nil {
 		panic(err)
 	}
