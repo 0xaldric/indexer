@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"github.com/xssnick/tonutils-go/address"
 	"github.com/xssnick/tonutils-go/ton"
 
@@ -61,7 +62,8 @@ func (s *Service) getTransaction(ctx context.Context, master, b *ton.BlockIDExt,
 		select {
 		case accRet := <-accCh:
 			if err := accRet.err; err != nil && !errors.Is(err, core.ErrNotFound) {
-				return nil, err
+				log.Error().Err(err).Msg("get account err")
+				continue
 			}
 			if accRet.res != nil {
 				acc = accRet.res.(*core.AccountState) //nolint:forcetypeassert // that's ok
@@ -69,7 +71,8 @@ func (s *Service) getTransaction(ctx context.Context, master, b *ton.BlockIDExt,
 
 		case txRet := <-txCh:
 			if err := txRet.err; err != nil {
-				return nil, err
+				log.Error().Err(err).Msg("get transaction err")
+				continue
 			}
 			tx = txRet.res.(*core.Transaction) //nolint:forcetypeassert // that's ok
 		}
