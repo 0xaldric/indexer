@@ -16,6 +16,7 @@ type IndexerConfig struct {
 
 	FromBlock uint32
 	Workers   int
+	KafkaURI string
 }
 
 type IndexerService interface {

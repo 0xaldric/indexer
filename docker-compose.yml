@@ -7,6 +7,7 @@ x-anton-service: &anton-service
   environment: &anton-env
     DB_CH_URL: "clickhouse://${CH_DB_USERNAME}:${CH_DB_PASSWORD}@clickhouse:9000/${CH_DB_NAME}?sslmode=disable"
     DB_PG_URL: "postgres://${PG_DB_USERNAME}:${PG_DB_PASSWORD}@postgres:5432/${PG_DB_NAME}?sslmode=disable"
+    KAFKA_URI: ${KAFKA_URI}
 
 services:
   indexer:

@@ -181,6 +181,7 @@ var Command = &cli.Command{
 			AccountRepo: account.NewRepository(conn.CH, conn.PG),
 			Parser:      p,
 		})
+		KafkaURI := env.GetString("KAFKA_URI", "kafka:9092")
 		i := indexer.NewService(&app.IndexerConfig{
 			DB:        conn,
 			API:       api,
@@ -188,6 +189,7 @@ var Command = &cli.Command{
 			Fetcher:   f,
 			FromBlock: uint32(env.GetInt32("FROM_BLOCK", 1)),
 			Workers:   env.GetInt("WORKERS", 4),
+			KafkaURI: KafkaURI,
 		})
 		if err = i.Start(); err != nil {
 			return err
