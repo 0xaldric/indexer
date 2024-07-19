@@ -27,9 +27,9 @@ services:
         soft: 262144
         hard: 262144
     environment:
-      CLICKHOUSE_DB: "${DB_NAME}"
-      CLICKHOUSE_USER: "${DB_USERNAME}"
-      CLICKHOUSE_PASSWORD: "${DB_PASSWORD}"
+      CLICKHOUSE_DB: "${CH_DB_NAME}"
+      CLICKHOUSE_USER: "${CH_DB_USERNAME}"
+      CLICKHOUSE_PASSWORD: "${CH_DB_PASSWORD}"
   postgres:
     image: "postgres:15"
     shm_size: 128gb
@@ -50,9 +50,9 @@ services:
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata/
-      POSTGRES_DB: "${DB_NAME}"
-      POSTGRES_USER: "${DB_USERNAME}"
-      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${PG_DB_NAME}"
+      POSTGRES_USER: "${PG_DB_USERNAME}"
+      POSTGRES_PASSWORD: "${PG_DB_PASSWORD}"
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     restart: always

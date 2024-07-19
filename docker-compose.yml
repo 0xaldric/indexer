@@ -5,8 +5,8 @@ x-anton-service: &anton-service
   networks:
     - indexer_network
   environment: &anton-env
-    DB_CH_URL: "clickhouse://${DB_USERNAME}:${DB_PASSWORD}@clickhouse:9000/${DB_NAME}?sslmode=disable"
-    DB_PG_URL: "postgres://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_NAME}?sslmode=disable"
+    DB_CH_URL: "clickhouse://${CH_DB_USERNAME}:${CH_DB_PASSWORD}@clickhouse:9000/${CH_DB_NAME}?sslmode=disable"
+    DB_PG_URL: "postgres://${PG_DB_USERNAME}:${PG_DB_PASSWORD}@postgres:5432/${PG_DB_NAME}?sslmode=disable"
 
 services:
   indexer:
