@@ -37,7 +37,7 @@ func (s *Service) createTopics() {
 	if err != nil {
 		log.Error().Msg(fmt.Sprintf("get operations: %v\n", err))
 	}
-	adminClient, err := kafka.NewAdminClient(&kafka.ConfigMap{"bootstrap.servers": "kafka:9092"})
+	adminClient, err := kafka.NewAdminClient(&kafka.ConfigMap{"bootstrap.servers": s.KafkaURI})
 	if err != nil {
 		log.Error().Msg(fmt.Sprintf("create admin client: %v\n", err))
 	}
